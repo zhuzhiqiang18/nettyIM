@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			
+		</style>
+ 		<script src="../js/socket.io/socket.io.js"></script>
+ 		<script type="text/javascript" src="../js/socket.js" ></script>
+        <script src="../js/moment.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+	<script>
+
+                var userName = 'user' + Math.floor((Math.random()*1000)+1);
+
+		 socket =  io.connect('http://localhost:9092');
+
+		socket.on('connect', function() {
+			output('<span class="connect-msg">Client has connected to the server!</span>');
+		});
+
+		socket.on('login', function(data) {
+			window.location.href="index.html"
+		});
+
+		socket.on('disconnect', function() {
+			output('<span class="disconnect-msg">The client has disconnected!</span>');
+		});
+
+                function sendDisconnect() {
+                        socket.disconnect();
+                }
+
+		function login() {
+                        var userName = $('#account').val();
+                       if(userName==''||userName.length==0){
+                       	alert("请输入昵称!");
+                       	return;
+                       }
+
+                        var jsonObject = {userName: userName,
+                                          message: "login"};
+                        socket.emit('login', jsonObject);
+		}
+
+		function output(message) {
+                        var currentTime = "<span class='time'>" +  moment().format('HH:mm:ss.SSS') + "</span>";
+                        var element = $("<div>" + currentTime + " " + message + "</div>");
+			$('#console').prepend(element);
+		}
+
+        $(document).keydown(function(e){
+            if(e.keyCode == 13) {
+                $('#send').click();
+            }
+        });
+	</script>
+	</head>
+
+	<body>
+		
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+		</script>
+	</body>
+
+</html>
